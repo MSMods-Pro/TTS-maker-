@@ -1,0 +1,8 @@
+{
+  "name": "VoiceForge AI",
+  "description": "Free human-like Text-to-Speech generator for YouTube creators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
