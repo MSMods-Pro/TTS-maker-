@@ -280,7 +280,7 @@ export default function App() {
               <Shield className="w-3.5 h-3.5" />
               100% Free • No Login Required
             </span>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-neutral-500 hover:text-white transition-colors">
+            <a href="https://github.com/MSMods-Pro" target="_blank" rel="noreferrer" className="text-neutral-500 hover:text-white transition-colors">
               <Github className="w-5 h-5" />
             </a>
           </div>
