@@ -158,7 +158,27 @@ export default function App() {
       }
 
       const blob = await response.blob();
+      if (blob.size === 0) {
+        throw new Error("TTS provider returned empty audio data.");
+      }
+      
       const url = URL.createObjectURL(blob);
+      
+      // Validate audio duration
+      const audio = new Audio(url);
+      await new Promise((resolve, reject) => {
+        audio.onloadedmetadata = () => {
+          if (audio.duration > 0) {
+            resolve(true);
+          } else {
+            reject(new Error("Generated audio is empty or has 0 duration."));
+          }
+        };
+        audio.onerror = () => {
+          reject(new Error("Generated audio could not be decoded."));
+        };
+      });
+
       setAudioUrl(url);
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
@@ -237,9 +257,9 @@ export default function App() {
   return (
     <div className="h-screen flex flex-col bg-neutral-950 text-neutral-200 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 overflow-hidden">
       {/* Subtle Background Glows */}
-      <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent pointer-events-none z-0" />
-      <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
-      <div className="absolute top-40 -left-40 w-96 h-96 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
+      <div className="hidden sm:block absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent pointer-events-none z-0" />
+      <div className="hidden sm:block absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
+      <div className="hidden sm:block absolute top-40 -left-40 w-96 h-96 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
       
       {/* Navigation */}
       <nav className="border-b border-neutral-800/80 bg-neutral-900/50 backdrop-blur-xl z-50 shrink-0">
@@ -268,9 +288,9 @@ export default function App() {
       </nav>
 
       <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10">
-        <div className="max-w-[1600px] mx-auto w-full h-full p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+        <div className="max-w-[1600px] mx-auto w-full h-full p-3 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-6">
 
-          <div className={`flex flex-col gap-6 ${isFocusMode ? '' : 'lg:flex-row'}`}>
+          <div className={`flex flex-col gap-4 sm:gap-6 ${isFocusMode ? '' : 'lg:flex-row'}`}>
             
             {/* Left Column: Script Editor */}
             <motion.div 
@@ -278,7 +298,7 @@ export default function App() {
               className={`flex-1 flex flex-col min-h-[55vh] bg-neutral-900/40 border border-neutral-800/60 rounded-3xl overflow-hidden backdrop-blur-xl shadow-2xl transition-all duration-300 ${isFocusMode ? 'min-h-[75vh]' : ''}`}
             >
               {/* Editor Top Bar */}
-              <div className="bg-neutral-900/60 border-b border-neutral-800/60 p-4 sm:px-6 flex items-center justify-between shrink-0">
+              <div className="bg-neutral-900/60 border-b border-neutral-800/60 p-3 sm:p-4 sm:px-6 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="bg-indigo-500/10 p-2 rounded-lg text-indigo-400">
                     <FileText className="w-5 h-5" />
@@ -443,9 +463,9 @@ export default function App() {
             <AnimatePresence>
               {!isFocusMode && (
                 <motion.div 
-                  initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-                  animate={{ opacity: 1, width: 'auto', marginLeft: 0 }}
-                  exit={{ opacity: 0, width: 0, marginLeft: 0 }}
+                  initial={{ opacity: 0, marginLeft: 0 }}
+                  animate={{ opacity: 1, marginLeft: 0 }}
+                  exit={{ opacity: 0, marginLeft: 0 }}
                   className="w-full lg:w-[380px] xl:w-[420px] shrink-0 flex flex-col gap-6"
                 >
                   {/* Voice Settings Box */}

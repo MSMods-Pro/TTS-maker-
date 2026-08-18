@@ -99,7 +99,7 @@ async function startServer() {
 
       res.send(finalBuffer);
     } catch (error) {
-      console.error('TTS Generation Error:', error, { targetVoice, textLength: text.length, rateStr, pitchStr, volStr });
+      console.error('TTS Generation Error:', error);
       res.status(500).json({ 
         error: 'Failed to generate speech. Please try again or check the language/voice configuration.',
         details: error instanceof Error ? error.message : String(error)
